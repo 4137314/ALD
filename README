@@ -1,49 +1,81 @@
-# Tensor Processing Unit
+Tensor Processing Unit (TPU)
+============================
 
+Project Overview
+----------------
+This project implements a minimal Tensor Processing Unit (TPU) in VHDL for educational
+and experimental purposes. The design supports a simple 2x2 or NxN systolic array of
+Processing Elements (PEs), each including a Multiply-Accumulate (MAC) unit and a basic
+activation function.
+
+The TPU can be simulated using GHDL or synthesized for FPGA targets. It is organized
+to provide modularity and clarity, allowing further extensions such as larger arrays,
+more complex memory systems, or additional interfaces.
+
+Directory Structure
+-------------------
 src/
-├─ hdl/                         # codice VHDL
-│  ├─ core/                     # blocchi fondamentali di calcolo
-│  │  ├─ mac.vhd                # Multiply-Accumulate unit
-│  │  ├─ pe.vhd                 # Processing Element (usa 1 o più MAC)
-│  │  ├─ systolic_array.vhd     # array NxN di PE
-│  │  └─ activation_unit.vhd    # ReLU, sigmoid (LUT o cordic)
-│  │
-│  ├─ memory/                   # gestione dati
-│  │  ├─ bram_model.vhd         # modello BRAM per simulazione
-│  │  ├─ dma_controller.vhd     # per trasferire blocchi di dati
-│  │  ├─ buffer.vhd             # line buffer / double buffer
-│  │  └─ regfile.vhd            # file di registri
-│  │
-│  ├─ control/                  # logica di controllo
-│  │  ├─ fsm_controller.vhd     # sequenziatore principale
-│  │  ├─ scheduler.vhd          # scheduling operazioni PE
-│  │  └─ pipeline_ctrl.vhd      # gestione hazard e stall
-│  │
-│  ├─ interfaces/               # interfacce esterne
-│  │  ├─ axi_lite_slave.vhd     # configurazione da CPU
-│  │  ├─ axi_stream_in.vhd      # input stream (es. dati A)
-│  │  ├─ axi_stream_out.vhd     # output stream (es. dati C)
-│  │  └─ uart_if.vhd            # semplice UART per debug
-│  │
-│  ├─ utils/                    # moduli riusabili
-│  │  ├─ fifo.vhd
-│  │  ├─ multiplier.vhd         # moltiplicatore standalone
-│  │  ├─ adder_tree.vhd         # riduzione somme parallele
-│  │  ├─ cordic.vhd             # calcolo funzioni trig/log
-│  │  └─ timer.vhd
-│  │
-│  └─ top/                      # design top-level
-│     ├─ mat2x2_accel.vhd       # esempio minimale
-│     ├─ systolic4x4.vhd        # acceleratore 4x4
-│     ├─ tpu_top.vhd            # architettura TPU completa
-│     └─ soc_wrapper.vhd        # integrazione con un SoC
-│
-└─ tb/                          # testbench (uno per modulo)
-   ├─ tb_mac.vhd
-   ├─ tb_pe.vhd
-   ├─ tb_systolic_array.vhd
-   ├─ tb_memory.vhd
-   ├─ tb_controller.vhd
-   ├─ tb_axi.vhd
-   ├─ tb_mat2x2.vhd
-   └─ tb_tpu_top.vhd
+    hdl/                 VHDL source files
+        core/            Fundamental computation blocks
+            mac.vhd           Multiply-Accumulate unit
+            pe.vhd            Processing Element (MAC + activation)
+            systolic_array.vhd  NxN array of PEs
+        memory/          Memory models
+            bram_model.vhd    Simple BRAM for simulation
+        control/         Control logic
+            fsm_controller.vhd  Finite state machine sequencer
+        top/             Top-level designs
+            tpu_top.vhd       Complete TPU top-level
+            mat2x2_accel.vhd  Minimal 2x2 accelerator example
+
+    tb/                  Testbenches
+        tb_mac.vhd
+        tb_pe.vhd
+        tb_systolic_array.vhd
+        tb_tpu_top.vhd
+
+Requirements
+------------
+- VHDL-2008 compatible simulator (e.g., GHDL)
+- Optional: FPGA synthesis tool for hardware implementation
+
+Building and Simulation
+----------------------
+1. Compile VHDL sources with your preferred simulator:
+
+       ghdl -a src/hdl/core/mac.vhd
+       ghdl -a src/hdl/core/pe.vhd
+       ghdl -a src/hdl/core/systolic_array.vhd
+       ghdl -a src/hdl/memory/bram_model.vhd
+       ghdl -a src/hdl/control/fsm_controller.vhd
+       ghdl -a src/hdl/top/tpu_top.vhd
+
+2. Elaborate the top-level design:
+
+       ghdl -e tpu_top
+
+3. Run simulation:
+
+       ghdl -r tpu_top --vcd=tpu_top.vcd
+
+4. Open the waveform file with GTKWave or your preferred viewer:
+
+       gtkwave tpu_top.vcd
+
+License
+-------
+This project is free software; you can redistribute it and/or modify it under the
+terms of the GNU General Public License as published by the Free Software Foundation;
+either version 3 of the License, or (at your option) any later version.
+
+This project is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+Authors
+-------
+4137314
+
+Contact
+-------
+GitHub: https://github.com/4137314/PSE
