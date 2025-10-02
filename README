@@ -1,81 +1,70 @@
-Tensor Processing Unit (TPU)
-============================
+RISC-V CPU Core in VHDL
+=======================
 
-Project Overview
-----------------
-This project implements a minimal Tensor Processing Unit (TPU) in VHDL for educational
-and experimental purposes. The design supports a simple 2x2 or NxN systolic array of
-Processing Elements (PEs), each including a Multiply-Accumulate (MAC) unit and a basic
-activation function.
+Copyright (C) 2025  Your Name
 
-The TPU can be simulated using GHDL or synthesized for FPGA targets. It is organized
-to provide modularity and clarity, allowing further extensions such as larger arrays,
-more complex memory systems, or additional interfaces.
+This file is part of the RISC-V CPU project.
 
-Directory Structure
--------------------
-src/
-    hdl/                 VHDL source files
-        core/            Fundamental computation blocks
-            mac.vhd           Multiply-Accumulate unit
-            pe.vhd            Processing Element (MAC + activation)
-            systolic_array.vhd  NxN array of PEs
-        memory/          Memory models
-            bram_model.vhd    Simple BRAM for simulation
-        control/         Control logic
-            fsm_controller.vhd  Finite state machine sequencer
-        top/             Top-level designs
-            tpu_top.vhd       Complete TPU top-level
-            mat2x2_accel.vhd  Minimal 2x2 accelerator example
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    tb/                  Testbenches
-        tb_mac.vhd
-        tb_pe.vhd
-        tb_systolic_array.vhd
-        tb_tpu_top.vhd
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-Requirements
-------------
-- VHDL-2008 compatible simulator (e.g., GHDL)
-- Optional: FPGA synthesis tool for hardware implementation
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-Building and Simulation
-----------------------
-1. Compile VHDL sources with your preferred simulator:
+Overview
+--------
 
-       ghdl -a src/hdl/core/mac.vhd
-       ghdl -a src/hdl/core/pe.vhd
-       ghdl -a src/hdl/core/systolic_array.vhd
-       ghdl -a src/hdl/memory/bram_model.vhd
-       ghdl -a src/hdl/control/fsm_controller.vhd
-       ghdl -a src/hdl/top/tpu_top.vhd
+This project implements a **RISC-V CPU core** in VHDL suitable for FPGA prototyping
+and educational purposes. The design currently supports the **RV32I base integer instruction set**,
+with modular architecture that allows easy extension to RV32IM (multiply/divide), pipeline stages,
+and peripheral interfaces.
 
-2. Elaborate the top-level design:
+Features
+--------
 
-       ghdl -e tpu_top
+- Single-cycle or pipelined RV32I CPU core
+- Modular design: separate components for ALU, Register File, PC, Control Unit, Immediate Generator
+- Optional support for Multiply/Divide (RV32M) and Control and Status Registers (CSR)
+- Instruction and data memory interfaces (easily replaced with on-chip RAM or external blocks)
+- Testbenches for all main modules for simulation
+- Fully commented VHDL code in GNU style
 
-3. Run simulation:
 
-       ghdl -r tpu_top --vcd=tpu_top.vcd
+Usage
+-----
 
-4. Open the waveform file with GTKWave or your preferred viewer:
+1. **Simulation:**  
+   - Use GHDL, ModelSim, or other VHDL simulators to compile the `hdl` and `tb` directories.  
+   - Run the testbenches (e.g., `tb_riscv_core.vhd`) to verify functionality.
 
-       gtkwave tpu_top.vcd
+2. **Synthesis:**  
+   - Target an FPGA (Xilinx, Intel/Altera, Lattice).  
+   - Replace the instruction and data memory interfaces with block RAMs or external memory.
 
-License
--------
-This project is free software; you can redistribute it and/or modify it under the
-terms of the GNU General Public License as published by the Free Software Foundation;
-either version 3 of the License, or (at your option) any later version.
+3. **Program Loading:**  
+   - Compile RISC-V assembly or C programs into a `.hex` or `.bin` format.  
+   - Load them into the instruction memory for simulation or FPGA execution.
 
-This project is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+Extensions
+----------
 
-Authors
--------
-4137314
+- Implement a full 5-stage pipeline with hazard detection and forwarding
+- Add Multiply/Divide instructions (RV32M)
+- Add compressed instructions (RV32C)
+- Add floating-point unit (RV32F/D)
+- Connect peripherals through AXI4/Wishbone bus
+- Integrate accelerators (e.g., TPU or DSP)  
 
-Contact
--------
-GitHub: https://github.com/4137314/PSE
+References
+----------
+
+- RISC-V Instruction Set Manual: https://riscv.org/technical/specifications/
+- IEEE 1076-2019 VHDL Standard: https://standards.ieee.org/standard/1076-2019.html
+- FPGA vendor documentation (Xilinx, Intel, Lattice)
