@@ -1,0 +1,49 @@
+# Tensor Processing Unit
+
+src/
+├─ hdl/                         # codice VHDL
+│  ├─ core/                     # blocchi fondamentali di calcolo
+│  │  ├─ mac.vhd                # Multiply-Accumulate unit
+│  │  ├─ pe.vhd                 # Processing Element (usa 1 o più MAC)
+│  │  ├─ systolic_array.vhd     # array NxN di PE
+│  │  └─ activation_unit.vhd    # ReLU, sigmoid (LUT o cordic)
+│  │
+│  ├─ memory/                   # gestione dati
+│  │  ├─ bram_model.vhd         # modello BRAM per simulazione
+│  │  ├─ dma_controller.vhd     # per trasferire blocchi di dati
+│  │  ├─ buffer.vhd             # line buffer / double buffer
+│  │  └─ regfile.vhd            # file di registri
+│  │
+│  ├─ control/                  # logica di controllo
+│  │  ├─ fsm_controller.vhd     # sequenziatore principale
+│  │  ├─ scheduler.vhd          # scheduling operazioni PE
+│  │  └─ pipeline_ctrl.vhd      # gestione hazard e stall
+│  │
+│  ├─ interfaces/               # interfacce esterne
+│  │  ├─ axi_lite_slave.vhd     # configurazione da CPU
+│  │  ├─ axi_stream_in.vhd      # input stream (es. dati A)
+│  │  ├─ axi_stream_out.vhd     # output stream (es. dati C)
+│  │  └─ uart_if.vhd            # semplice UART per debug
+│  │
+│  ├─ utils/                    # moduli riusabili
+│  │  ├─ fifo.vhd
+│  │  ├─ multiplier.vhd         # moltiplicatore standalone
+│  │  ├─ adder_tree.vhd         # riduzione somme parallele
+│  │  ├─ cordic.vhd             # calcolo funzioni trig/log
+│  │  └─ timer.vhd
+│  │
+│  └─ top/                      # design top-level
+│     ├─ mat2x2_accel.vhd       # esempio minimale
+│     ├─ systolic4x4.vhd        # acceleratore 4x4
+│     ├─ tpu_top.vhd            # architettura TPU completa
+│     └─ soc_wrapper.vhd        # integrazione con un SoC
+│
+└─ tb/                          # testbench (uno per modulo)
+   ├─ tb_mac.vhd
+   ├─ tb_pe.vhd
+   ├─ tb_systolic_array.vhd
+   ├─ tb_memory.vhd
+   ├─ tb_controller.vhd
+   ├─ tb_axi.vhd
+   ├─ tb_mat2x2.vhd
+   └─ tb_tpu_top.vhd

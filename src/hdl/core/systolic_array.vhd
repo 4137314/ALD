@@ -1,0 +1,1 @@
+# array NxN di PE
