@@ -68,3 +68,11 @@ References
 - RISC-V Instruction Set Manual: https://riscv.org/technical/specifications/
 - IEEE 1076-2019 VHDL Standard: https://standards.ieee.org/standard/1076-2019.html
 - FPGA vendor documentation (Xilinx, Intel, Lattice)
+
+IF ──► ID ──► EX ──► MEM ──► WB
+ │       │      │      │      │
+ │       │      │      │      └──► Register File (Write)
+ │       │      │      └────────► Data Mem
+ │       │      └──────────────► ALU/MUL/DIV
+ │       └─────────────────────► Decode + ImmGen
+ └────────────────────────────► Instr Mem
