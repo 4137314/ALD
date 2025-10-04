@@ -38,7 +38,7 @@ architecture rtl of riscv_core is
 
     -- Program Counter
     signal pc        : std_logic_vector(31 downto 0) := (others => '0');
-    signal pc_next   : std_logic_vector(31 downto 0');
+    signal pc_next   : std_logic_vector(31 downto 0);
 
     -- Instruction
     signal instr     : std_logic_vector(31 downto 0);

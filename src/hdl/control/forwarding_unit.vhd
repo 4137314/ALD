@@ -25,31 +25,36 @@ entity forwarding_unit is
 end entity;
 
 architecture rtl of forwarding_unit is
+    signal fwd_a_int, fwd_b_int : std_logic_vector(1 downto 0);
 begin
     process(id_ex_rs1, id_ex_rs2, ex_mem_rd, ex_mem_reg_write, mem_wb_rd, mem_wb_reg_write)
     begin
-        -- defaults: 00 = no forward
-        forward_a <= "00";
-        forward_b <= "00";
+        -- default
+        fwd_a_int <= "00";
+        fwd_b_int <= "00";
 
-        -- EX hazard forward
+        -- EX hazard
         if (ex_mem_reg_write = '1') and (ex_mem_rd /= "00000") and (ex_mem_rd = id_ex_rs1) then
-            forward_a <= "01";
+            fwd_a_int <= "01";
         end if;
         if (ex_mem_reg_write = '1') and (ex_mem_rd /= "00000") and (ex_mem_rd = id_ex_rs2) then
-            forward_b <= "01";
+            fwd_b_int <= "01";
         end if;
 
-        -- MEM hazard forward (lower priority than EX)
+        -- MEM hazard (solo se EX non ha già forzato)
         if (mem_wb_reg_write = '1') and (mem_wb_rd /= "00000") and (mem_wb_rd = id_ex_rs1) then
-            if forward_a = "00" then
-                forward_a <= "10";
+            if fwd_a_int = "00" then
+                fwd_a_int <= "10";
             end if;
         end if;
         if (mem_wb_reg_write = '1') and (mem_wb_rd /= "00000") and (mem_wb_rd = id_ex_rs2) then
-            if forward_b = "00" then
-                forward_b <= "10";
+            if fwd_b_int = "00" then
+                fwd_b_int <= "10";
             end if;
         end if;
     end process;
+
+    -- assegnazione ai port out
+    forward_a <= fwd_a_int;
+    forward_b <= fwd_b_int;
 end architecture;
